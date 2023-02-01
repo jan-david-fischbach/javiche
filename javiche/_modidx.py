@@ -5,4 +5,5 @@ d = { 'settings': { 'branch': 'master',
                 'doc_host': 'https://Jan-David-Black.github.io',
                 'git_url': 'https://github.com/Jan-David-Black/javiche',
                 'lib_path': 'javiche'},
-  'syms': {'javiche.core': {'javiche.core.foo': ('core.html#foo', 'javiche/core.py')}}}
+  'syms': { 'javiche.core': { 'javiche.core.bar': ('core.html#bar', 'javiche/core.py'),
+                              'javiche.core.foo': ('core.html#foo', 'javiche/core.py')}}}
