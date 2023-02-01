@@ -6,11 +6,11 @@ __all__ = ['jacobian', 'working']
 # %% ../nbs/01_jacob.ipynb 2
 import ceviche as cv
 
-# %% ../nbs/01_jacob.ipynb 4
+# %% ../nbs/01_jacob.ipynb 3
 def jacobian():
   print("running jacobian")
   cv.jacobian(lambda x: 2*x)
 
-# %% ../nbs/01_jacob.ipynb 5
+# %% ../nbs/01_jacob.ipynb 4
 def working():
   print("ist this working?")
