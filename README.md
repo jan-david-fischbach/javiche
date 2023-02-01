@@ -8,16 +8,26 @@ documentation.
 
 ## Install
 
+*This package is not yet published. As soon as it is install with:*
+
 ``` sh
 pip install javiche
 ```
 
-## How to use
+or
 
-Fill me in please! Don’t forget code examples:
-
-``` python
-1+1
+``` sh
+conda install javiche
 ```
 
-    2
+## How to use
+
+``` python
+from javiche import jacobian
+```
+
+``` python
+jacobian()
+```
+
+    running jacobian
