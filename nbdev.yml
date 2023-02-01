@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "javiche"
+  site-url: "https://Jan-David-Black.github.io/javiche"
+  description: "A JAX wrapper around ceviche to make interoperability easier. In the future it might make sense to update ceviche itself to use JAX internally."
+  repo-branch: master
+  repo-url: "https://github.com/Jan-David-Black/javiche"
