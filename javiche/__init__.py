@@ -5,4 +5,4 @@ __version__ = "0.0.1"
 __all__ = []
 
 # %% ../nbs/99_core.ipynb 2
-from .jacob import jacobian
+from javiche.jaxify import jaxit

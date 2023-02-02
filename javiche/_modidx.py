@@ -5,5 +5,4 @@ d = { 'settings': { 'branch': 'main',
                 'doc_host': 'https://Jan-David-Black.github.io',
                 'git_url': 'https://github.com/Jan-David-Black/javiche',
                 'lib_path': 'javiche'},
-  'syms': { 'javiche.jacob': { 'javiche.jacob.jacobian': ('jacob.html#jacobian', 'javiche/jacob.py'),
-                               'javiche.jacob.working': ('jacob.html#working', 'javiche/jacob.py')}}}
+  'syms': {'javiche.jaxify': {'javiche.jaxify.jaxit': ('jaxify.html#jaxit', 'javiche/jaxify.py')}}}
