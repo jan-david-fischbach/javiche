@@ -8,14 +8,19 @@ from ceviche import jacobian
 import numpy as np
 import jax
 import jax.numpy as jnp
+from typing import List
 
 # %% ../nbs/01_jaxify.ipynb 3
-def jaxit(mode='reverse', argnums=[0]):
-  def inner(function):
-    """
+def jaxit(
+  mode: str='reverse', #the mode used to calculate the jacobian using `ceviche`
+  argnums: List[int]=[0] #the argument indices this function should be differentiable against
+  ):
+  """
     make a function that internally uses autograd compatible to jax gradient calculations
-    only a single output variable is supported
-    """
+
+    Attention: only a single output variable is supported
+  """
+  def inner(function):
     grad_fns = [jacobian(function, mode=mode, argnum=i) for i in argnums]
 
     @jax.custom_jvp
