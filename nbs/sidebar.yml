@@ -2,5 +2,6 @@ website:
   sidebar:
     contents:
       - index.ipynb
-      - 01_jacob.ipynb
-      - 99_global.ipynb
+      - 01_jaxify.ipynb
+      - 02_test_simple.ipynb
+      - 03_test_inverse_design.ipynb
