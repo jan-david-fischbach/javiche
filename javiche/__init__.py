@@ -1,5 +1,6 @@
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 
 __all__ = ["jaxit"]
 
-from javiche.jaxify import jaxit
+from .jaxify import jaxit
+from . import invdes
