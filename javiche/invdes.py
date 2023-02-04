@@ -8,6 +8,8 @@ import numpy as np
 import matplotlib.pylab as plt
 import ceviche
 
+
+# %% ../nbs/03_test_inverse_design.ipynb 5
 """ 
 Patching Ceviche
 """
