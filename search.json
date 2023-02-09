@@ -1,0 +1,72 @@
+[
+  {
+    "objectID": "jaxify.html",
+    "href": "jaxify.html",
+    "title": "jaxify",
+    "section": "",
+    "text": "source\n\nnp_cache\n\n np_cache (*args, **kwargs)\n\nLRU cache implementation for functions whose FIRST parameter is a numpy array >>> array = np.array([[1, 2, 3], [4, 5, 6]]) >>> @np_cache(maxsize=256) … def multiply(array, factor): … print(“Calculating…”) … return factor*array >>> multiply(array, 2) Calculating… array([[ 2, 4, 6], [ 8, 10, 12]]) >>> multiply(array, 2) array([[ 2, 4, 6], [ 8, 10, 12]]) >>> multiply.cache_info() CacheInfo(hits=1, misses=1, maxsize=256, currsize=1)\n\nsource\n\n\nas_jax\n\n as_jax (x)\n\n\nsource\n\n\nas_numpy\n\n as_numpy (x)\n\n\nsource\n\n\njaxit\n\n jaxit (cache:bool=False)\n\nmake a function that internally uses autograd compatible to jax gradient calculations\nAttention: only a single output variable is supported"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "javiche",
+    "section": "",
+    "text": "Small package to enable using ceviche with a JAX optimizer easily."
+  },
+  {
+    "objectID": "index.html#install",
+    "href": "index.html#install",
+    "title": "javiche",
+    "section": "Install",
+    "text": "Install\nThis package is not yet published. As soon as it is install with:\npip install javiche\nor\nconda install javiche"
+  },
+  {
+    "objectID": "index.html#how-to-use",
+    "href": "index.html#how-to-use",
+    "title": "javiche",
+    "section": "How to use",
+    "text": "How to use\nImport the decorator\n\nfrom javiche import jaxit\n\ndecorate your function (will be differentiated using ceviches jacobian -> HIPS autograd)\n\n@jaxit()\ndef square(A):\n  \"\"\"squares number/array\"\"\"\n  return A**2\n\nNow you can use jax as usual:\n\ngrad_fn = jax.grad(square)\n\n\ngrad_fn(2.0)\n\nArray(4., dtype=float32, weak_type=True)\n\n\nIn this toy example that was already possible without the jaxit() decorator. However jaxit() decorated functions can contain autograd operators (but no jax operators):\n\nimport autograd.numpy as npa\n\n\ndef sin(A):\n  \"\"\"computes sin of number/array using autograds numpy\"\"\"\n  return npa.sin(A)\n\n\ngrad_sin = jax.grad(sin)\ntry:\n  print(grad_sin(0.0))\nexcept Exception as e:\n  print(e)\n\nThe numpy.ndarray conversion method __array__() was called on the JAX Tracer object Traced<ConcreteArray(0.0, dtype=float32, weak_type=True)>with<JVPTrace(level=2/0)> with\n  primal = 0.0\n  tangent = Traced<ShapedArray(float32[], weak_type=True)>with<JaxprTrace(level=1/0)> with\n    pval = (ShapedArray(float32[], weak_type=True), None)\n    recipe = LambdaBinding()\nSee https://jax.readthedocs.io/en/latest/errors.html#jax.errors.TracerArrayConversionError\n\n\n\n@jaxit()\ndef cos(A):\n  \"\"\"computes sin of number/array using autograds numpy\"\"\"\n  return npa.cos(A)\n\ngrad_cos = jax.grad(cos)\ntry:\n  print(grad_cos(0.0))\nexcept Exception as e:\n  print(e)\n\n-0.0"
+  },
+  {
+    "objectID": "index.html#usecase",
+    "href": "index.html#usecase",
+    "title": "javiche",
+    "section": "Usecase",
+    "text": "Usecase\nThis library is intended for use with ceviche, while running a JAX optimization stack as demonstated in the inverse design example"
+  },
+  {
+    "objectID": "test_simple.html",
+    "href": "test_simple.html",
+    "title": "Simple Tests",
+    "section": "",
+    "text": "from javiche import jaxit\nfrom jax import grad"
+  },
+  {
+    "objectID": "test_simple.html#caching",
+    "href": "test_simple.html#caching",
+    "title": "Simple Tests",
+    "section": "Caching",
+    "text": "Caching\nWe can also use caching to avoid recalculating the result of a function with the same input parameters.\n\n@jaxit(cache=True)\ndef cubed(A):\n  \"\"\"computes A to the power of three\"\"\"\n  time.sleep(1)\n  return A**3\n\n\n\n\n1.01 s ± 0 ns per loop (mean ± std. dev. of 1 run, 1 loop each)\n\n\n\n\n\n342 µs ± 0 ns per loop (mean ± std. dev. of 1 run, 1 loop each)\n\n\nAt the same time we maintain the ability to calculate gradients on it using jax\n\n\n\n1.55 ms ± 0 ns per loop (mean ± std. dev. of 1 run, 1 loop each)\n\n\n\n\n\n1.01 s ± 0 ns per loop (mean ± std. dev. of 1 run, 1 loop each)\n\n\n\nassert grad(cubed, argnums=0)(2.0) == 12\n\nNote that this functionality relies on all inputs to the function being hashable. Additionally also JAX Arrays and numpy arrays are supported"
+  },
+  {
+    "objectID": "test_inverse_design.html",
+    "href": "test_inverse_design.html",
+    "title": "Inverse Design Test",
+    "section": "",
+    "text": "source\n\n\n\n plot_abs (val, outline=None, ax=None, cbar=False, cmap='magma',\n           outline_alpha=0.5, outline_val=None)\n\nPlots the absolute value of ‘val’, optionally overlaying an outline of ‘outline’\n\nsource\n\n\n\n\n plot_real (val, outline=None, ax=None, cbar=False, cmap='RdBu',\n            outline_alpha=0.5)\n\nPlots the real part of ‘val’, optionally overlaying an outline of ‘outline’\n\nsource\n\n\n\n\n insert_mode (omega, dx, x, y, epsr, target=None, npml=0, m=1,\n              filtering=False)\n\nSolve for the modes in a cross section of epsr at the location defined by ‘x’ and ‘y’ The mode is inserted into the ‘target’ array if it is suppled, if the target array is not supplied, then a target array is created with the same shape as epsr, and the mode is inserted into it.\n\nimport collections\nimport autograd.numpy as npa\nfrom ceviche import fdfd_ez, jacobian\nfrom ceviche.modes import insert_mode\nfrom jax.example_libraries.optimizers import adam\nfrom tqdm.notebook import trange\n\n\nSlice = collections.namedtuple('Slice', 'x y')"
+  },
+  {
+    "objectID": "test_inverse_design.html#simulation-and-optimization-parameters",
+    "href": "test_inverse_design.html#simulation-and-optimization-parameters",
+    "title": "Inverse Design Test",
+    "section": "Simulation and optimization parameters",
+    "text": "Simulation and optimization parameters\nOur toy optimization problem will be to design a device that converts an input in the first-order mode into an output as the second-order mode. First, we define the parameters of our device and optimization:\n\n# Angular frequency of the source in Hz\nomega = 2 * np.pi * 200e12\n# Spatial resolution in meters\ndl = 40e-9\n# Number of pixels in x-direction\nNx = 100\n# Number of pixels in y-direction\nNy = 100\n# Number of pixels in the PMLs in each direction\nNpml = 20\n# Initial value of the structure's relative permittivity\nepsr_init = 12.0\n# Space between the PMLs and the design region (in pixels)\nspace = 10\n# Width of the waveguide (in pixels)\nwg_width = 12\n# Length in pixels of the source/probe slices on each side of the center point\nspace_slice = 8\n# Number of epochs in the optimization\nNsteps = 100\n# Step size for the Adam optimizer\nstep_size = 1e-2\n\n\nUtility functions\nWe now define some utility functions for initialization and optimization:\n\ndef init_domain(\n    Nx=Nx, Ny=Ny, Npml=Npml, space=space, wg_width=wg_width, space_slice=space_slice\n):\n    \"\"\"Initializes the domain and design region\n\n    space       : The space between the PML and the structure\n    wg_width    : The feed and probe waveguide width\n    space_slice : The added space for the probe and source slices\n    \"\"\"\n\n    # Parametrization of the permittivity of the structure\n    bg_epsr = np.ones((Nx, Ny))\n    epsr = np.ones((Nx, Ny))\n\n    # Region within which the permittivity is allowed to change\n    design_region = np.zeros((Nx, Ny))\n\n    # Input waveguide\n    bg_epsr[0 : int(Npml + space), int(Ny / 2 - wg_width / 2) : int(Ny / 2 + wg_width / 2)] = epsr_init\n\n    # Input probe slice\n    input_slice = Slice(\n        x=np.array(Npml + 1),\n        y=np.arange(\n            int(Ny / 2 - wg_width / 2 - space_slice),\n            int(Ny / 2 + wg_width / 2 + space_slice),\n        ),\n    )\n\n    # Output waveguide\n    bg_epsr[\n        int(Nx - Npml - space) : :,\n        int(Ny / 2 - wg_width / 2) : int(Ny / 2 + wg_width / 2),\n    ] = epsr_init\n\n    # Output probe slice\n    output_slice = Slice(\n        x=np.array(Nx - Npml - 1),\n        y=np.arange(\n            int(Ny / 2 - wg_width / 2 - space_slice),\n            int(Ny / 2 + wg_width / 2 + space_slice),\n        ),\n    )\n\n    design_region[Npml + space: Nx - Npml - space, Npml + space: Ny - Npml - space] = 1.0\n    epsr[Npml + space : Nx - Npml - space, Npml + space : Ny - Npml - space] = epsr_init\n\n    return epsr, bg_epsr, design_region, input_slice, output_slice\n\n\ndef mask_combine_epsr(epsr, bg_epsr, design_region):\n    \"\"\"Utility function for combining the design region epsr and the background epsr\"\"\"\n    return epsr * design_region + bg_epsr * np.asarray(design_region == 0, dtype=float)\n\n\ndef viz_sim(epsr, source, slices=[]):\n    \"\"\"Solve and visualize a simulation with permittivity 'epsr'\"\"\"\n    simulation = fdfd_ez(omega, dl, epsr, [Npml, Npml])\n    _, _, Ez = simulation.solve(source)\n    _, ax = plt.subplots(1, 2, constrained_layout=True, figsize=(6, 3))\n    ceviche.viz.real(Ez, outline=epsr, ax=ax[0], cbar=False)\n    for sl in slices:\n        ax[0].plot(sl.x * np.ones(len(sl.y)), sl.y, \"b-\")\n    ceviche.viz.abs(epsr, ax=ax[1], cmap=\"Greys\")\n    plt.show()\n    return (simulation, ax)\n\n\ndef mode_overlap(E1, E2):\n    \"\"\"Defines an overlap integral between the simulated field and desired field\"\"\"\n    return npa.abs(npa.sum(npa.conj(E1) * E2))\n\n\n\nVisualizing the starting device\nWe can visualize what our starting device looks like and how it behaves. Our device is initialized by the init_domain() function which was defined several cells above.\n\n# Initialize the parametrization rho and the design region\nepsr, bg_epsr, design_region, input_slice, output_slice = init_domain(\n    Nx, Ny, Npml, space=space, wg_width=wg_width, space_slice=space_slice\n)\n\nepsr_total = mask_combine_epsr(epsr, bg_epsr, design_region)\n\n# Setup source\nsource = insert_mode(omega, dl, input_slice.x, input_slice.y, epsr_total, m=1)\n\n# Setup probe\nprobe = insert_mode(omega, dl, output_slice.x, output_slice.y, epsr_total, m=2)\n\n\n# Simulate initial device\nsimulation, ax = viz_sim(epsr_total, source, slices=[input_slice, output_slice])\n\n# get normalization factor (field overlap before optimizing)\n_, _, Ez = simulation.solve(source)\nE0 = mode_overlap(Ez, probe)\n\n\n\n\n\n\nDefine objective function\nWe will now define our objective function. This is a scalar-valued function which our optimizer uses to improve the device’s performance.\nOur objective function will consist of maximizing an overlap integral of the field in the output waveguide of the simulated device and the field of the waveguide’s second order mode (minimizing the negative overlap). The function takes in a single argument, epsr and returns the value of the overlap integral. The details of setting the permittivity and solving for the fields happens inside the objective function.\n\n# Simulate initial device\nsimulation, ax = viz_sim(epsr_total, source, slices=[input_slice, output_slice])"
+  },
+  {
+    "objectID": "test_inverse_design.html#jaxit",
+    "href": "test_inverse_design.html#jaxit",
+    "title": "Inverse Design Test",
+    "section": "Jaxit",
+    "text": "Jaxit\n\nfrom javiche import jaxit\nimport jax\n\n\n@jaxit(cache=True)\ndef loss_fn(epsr, factor):\n    \"\"\"Objective function called by optimizer\n    \n    1) Takes the epsr distribution as input\n    2) Runs the simulation\n    3) Returns the overlap integral between the output wg field \n       and the desired mode field\n    \"\"\"\n    #epsr = epsr.reshape((Nx, Ny))\n    simulation.eps_r = mask_combine_epsr(epsr, bg_epsr, design_region)\n    _, _, Ez = simulation.solve(source)\n    return -mode_overlap(Ez, probe) / E0 * factor\n\nThe @jaxit() decorator enables the automatic differntiation with the decorated function while internally calculating the gradients using ceviches jacobian which is based on autograd.\n\ngrad_fn = jax.grad(loss_fn)\n\nWith the decorator in place we can\n\nplt.imshow(grad_fn(epsr, 2.0))\n\n<matplotlib.image.AxesImage>\n\n\n\n\n\n\ninit_fn, update_fn, params_fn = adam(step_size)\nstate = init_fn(epsr)\nlossfactor = 2.0\n\n\ndef step_fn(step, state):\n    #latent = np.asarray(params_fn(state), dtype=float) # we need autograd arrays here...\n    latent = params_fn(state) # we need autograd arrays here...\n    loss = loss_fn(latent, lossfactor)\n    grads = grad_fn(latent, lossfactor)\n    optim_state = update_fn(step, grads, state)\n    return loss, optim_state\n\n\nrange_ = trange(20)\nfor step in range_:\n    loss, state = step_fn(step, state)\n    range_.set_postfix(loss=float(loss))\n\n\n\n\n\nlatent = params_fn(state)\nplt.imshow(latent)\n\n<matplotlib.image.AxesImage>\n\n\n\n\n\n\nsimulation.eps_r = mask_combine_epsr(epsr, bg_epsr, design_region)\n_, _, Ez = simulation.solve(source)\n\n\nplt.imshow(np.real(Ez))\n\n<matplotlib.image.AxesImage>"
+  }
+]
